@@ -7,9 +7,9 @@ def is_power_of_2(n):
     return (n != 0) and n & (n - 1) == 0
     
 def factor_gen(n):
-    return set(reduce(list.__add__, ([i, n/i] for i in range(1, int(sqrt(n) + 1)) if n % i == 0)))
+    return set(reduce(list.__add__, ([i, n/i] for i in xrange(1, int(sqrt(n) + 1)) if n % i == 0)))
 
-for square_size in range(1, 1000):
+for square_size in range(1, 10):
     d1 = defaultdict(int)
     for i in range(1, square_size**2):
         d1[sum(factor_gen(i))] += 1
