@@ -33,34 +33,58 @@ def factors(n):
     return set(reduce(list.__add__, ([i, n/i] for i in xrange(1, int(sqrt(n) + 1)) if n % i == 0)))
 
 
-
-# Compute the coordinates.
-grid_size = 2**9 + 1
+# Compute the coordinates. NOTE: Actual grid size will be x - 2.
+grid_size = 4999
 coords = generate_coords(grid_size)
 
 # Initialize a grid with all zeros.
 grid = [[0 for i in range(grid_size-2)] for j in range(grid_size-2)]
 
-# Fill the grid with the Ulam spiral (debugging).
+# Fill the grid with the increasing integers spiraling outwards from the center.
 for i, c in enumerate(coords):
     x = c[0] + (grid_size // 2) - 1
     y = c[1] + (grid_size // 2) - 1
     grid[y][x] = i+1
 
-# Print properly formatted grid.
-# print_grid(grid)
-
-# Replace grid values with 0 for composite numbers and 1 for primes.
+# Replace grid integers with the total number of divisors each integer has.
 for i, row in enumerate(grid):
     for j, val in enumerate(row):
-        if len(factors(val)) == 2:
-            grid[i][j] = 1
-        else:
-            grid[i][j] = 0
+        grid[i][j] = len(factors(val))
 
+# Create an 8-bit color palette (256 unique colors).
+palette = []
+for i in range(156):
+    r,g,b = int(i,i,i
+    palette.append((r,g,b))
+# palette = []
+# for i in range(16, 200):
+    # r = int(float(i) / (239.0 - 16.0) * 90.0)
+    # g = int(float(i) / 128.0 * 90.0)
+    # b = 100
+    # palette.append((r,g,b))
 
-# Use PyPNG to write a binary image.
 f = open('spiral.png', 'wb')
-w = png.Writer(len(grid[0]), len(grid), greyscale=True, bitdepth=1)
+w = png.Writer(len(grid[0]), len(grid), palette=palette, bitdepth=8)
 w.write(f, grid)
 f.close()
+
+
+
+
+
+######
+# Binary Ulam Spiral, with primes = white, composite = black.
+
+# Replace grid values with 0 for composite numbers and 1 for primes.
+# for i, row in enumerate(grid):
+    # for j, val in enumerate(row):
+        # if len(factors(val)) == 2:
+            # grid[i][j] = 1
+        # else:
+            # grid[i][j] = 0
+
+# Use PyPNG to write a binary image.
+# f = open('spiral.png', 'wb')
+# w = png.Writer(len(grid[0]), len(grid), greyscale=True, bitdepth=1)
+# w.write(f, grid)
+# f.close()
