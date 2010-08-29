@@ -54,7 +54,7 @@ for i, row in enumerate(grid):
 # Create an 8-bit color palette (256 unique colors).
 palette = []
 for i in range(156):
-    r,g,b = int(i,i,i
+    r,g,b = i,i,i
     palette.append((r,g,b))
 # palette = []
 # for i in range(16, 200):
