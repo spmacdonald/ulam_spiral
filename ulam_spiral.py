@@ -49,7 +49,7 @@ for i, c in enumerate(coords):
 # Replace grid integers with the total number of divisors each integer has.
 for i, row in enumerate(grid):
     for j, val in enumerate(row):
-        grid[i][j] = len(factors(val))
+        grid[i][j] = len(factors(val)) - 1
 
 # Create an 8-bit color palette (256 unique colors).
 palette = []
