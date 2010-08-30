@@ -34,7 +34,7 @@ def factors(n):
 
 
 # Compute the coordinates. NOTE: Actual grid size will be x - 2.
-grid_size = 4999
+grid_size = 2047
 coords = generate_coords(grid_size)
 
 # Initialize a grid with all zeros.
@@ -49,26 +49,20 @@ for i, c in enumerate(coords):
 # Replace grid integers with the total number of divisors each integer has.
 for i, row in enumerate(grid):
     for j, val in enumerate(row):
-        grid[i][j] = len(factors(val)) - 1
+        grid[i][j] = (len(factors(val)) - 2) % 255
+
 
 # Create an 8-bit color palette (256 unique colors).
 palette = []
-for i in range(156):
+for i in range(0, 255, 2):
     r,g,b = i,i,i
     palette.append((r,g,b))
-# palette = []
-# for i in range(16, 200):
-    # r = int(float(i) / (239.0 - 16.0) * 90.0)
-    # g = int(float(i) / 128.0 * 90.0)
-    # b = 100
-    # palette.append((r,g,b))
 
+# Write the PNG file.
 f = open('spiral.png', 'wb')
 w = png.Writer(len(grid[0]), len(grid), palette=palette, bitdepth=8)
 w.write(f, grid)
 f.close()
-
-
 
 
 
