@@ -37,7 +37,7 @@ class ArchimedeanSpiral(object):
     def draw_spiral(self, path):
         drawpath(path)
 
-    def draw_rays(self, path, num_rays):
+    def draw_rays(self, path, num_rays, multiplier=1):
         divisors = []
         for i in range(num_rays):
             divisors.append(len(factors(i)))
@@ -45,12 +45,24 @@ class ArchimedeanSpiral(object):
         for i, point in enumerate(path.points(amount=num_rays)):
             if i == 0:
                 continue
+
             d = divisors[i]
-            oval(point.x-d, point.y-d, 2*d, 2*d)
             theta = atan2(point.y, point.x)
+            r = sqrt(point.x**2 + point.y**2)
             tx, ty = self.ray_target_point(theta)
+
+            clr = self.get_ray_color(r, theta)
+            stroke(clr)
+            fill(clr)
+            oval(point.x-d, point.y-d, multiplier*d, multiplier*d)
+            strokewidth(multiplier*d)
             line(point.x, point.y, tx, ty)
-            print theta, tx,ty
+
+    def get_ray_color(self, r, theta):
+        alpha = r / sqrt((WIDTH/2)**2 + (HEIGHT/2)**2) + 0.05
+        # alpha = 0.4
+        return color(random(), random(), random(), alpha)
+
 
     def ray_target_point(self, theta):
         """ Given the ray angle, determine the direction to extend the line in. """
@@ -60,24 +72,35 @@ class ArchimedeanSpiral(object):
             slope = 0
 
         quad = self.find_quadrant(theta)
-        if quad == 'QUAD_1':
+        if quad == 'QUAD_1' or quad == 'QUAD_4':
             tx = WIDTH/2
             ty = slope * tx
             return (tx, ty)
-        elif quad == 'QUAD_2':
+        elif quad == 'QUAD_2' or quad == 'QUAD_3':
             tx = -WIDTH/2
-            ty = slope * tx
-            return (tx, ty)
-        elif quad == 'QUAD_3':
-            tx = -WIDTH/2
-            ty = slope * tx
-            return (tx, ty)
-        elif quad == 'QUAD_4':
-            tx = WIDTH/2
             ty = slope * tx
             return (tx, ty)
         else:
             raise ValueError, "Unknown quadrant"
+
+        # if quad == 'QUAD_1':
+            # tx = WIDTH/2
+            # ty = slope * tx
+            # return (tx, ty)
+        # elif quad == 'QUAD_2':
+            # tx = -WIDTH/2
+            # ty = slope * tx
+            # return (tx, ty)
+        # elif quad == 'QUAD_3':
+            # tx = -WIDTH/2
+            # ty = slope * tx
+            # return (tx, ty)
+        # elif quad == 'QUAD_4':
+            # tx = WIDTH/2
+            # ty = slope * tx
+            # return (tx, ty)
+        # else:
+            # raise ValueError, "Unknown quadrant"
 
     def find_quadrant(self, theta):
         """ Assumes that the origin has been set as the center of the figure. """
@@ -118,7 +141,6 @@ def frange(start, end=None, inc=None):
         
     return L
 
-
 ######## Begin drawing
 
 colors = ximport('colors')
@@ -128,9 +150,14 @@ translate(WIDTH/2, HEIGHT/2)
 nofill()
 stroke(0)
 
-spiral = ArchimedeanSpiral(40, 13)
+# spiral = ArchimedeanSpiral(40, 13)
+# path = spiral.find_spiral_path()
+# spiral.draw_spiral(path)
+# spiral.draw_rays(path, 100)
+
+spiral = ArchimedeanSpiral(5, 50)
 path = spiral.find_spiral_path()
-spiral.draw_spiral(path)
-spiral.draw_rays(path, 100)
+# spiral.draw_spiral(path)
+spiral.draw_rays(path, 800)
 
 canvas.save('artwork.png')
