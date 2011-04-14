@@ -1,4 +1,5 @@
 from math import pi, sin, cos, atan2, sqrt
+from datetime import datetime
 
 WIDTH = 660
 HEIGHT = 660
@@ -19,9 +20,11 @@ class ArchimedeanSpiral(object):
         y(theta) = (alpha * theta) / (2 * pi) * sin(theta)
     """
 
-    def __init__(self, alpha, num_turns):
+    def __init__(self, alpha, num_turns, num_rays, multiplier):
         self.alpha = alpha
         self.num_turns = num_turns
+        self.num_rays = num_rays
+        self.multiplier = multiplier
 
     def find_spiral_path(self):
         """ Uses the Nodebox function `findpath` to construct a smooth path
@@ -37,12 +40,12 @@ class ArchimedeanSpiral(object):
     def draw_spiral(self, path):
         drawpath(path)
 
-    def draw_rays(self, path, num_rays, multiplier=1):
+    def draw_rays(self, path, multiplier=1.25):
         divisors = []
-        for i in range(num_rays):
+        for i in range(self.num_rays):
             divisors.append(len(factors(i)))
 
-        for i, point in enumerate(path.points(amount=num_rays)):
+        for i, point in enumerate(path.points(amount=self.num_rays)):
             if i == 0:
                 continue
 
@@ -59,10 +62,11 @@ class ArchimedeanSpiral(object):
             line(point.x, point.y, tx, ty)
 
     def get_ray_color(self, r, theta):
-        alpha = r / sqrt((WIDTH/2)**2 + (HEIGHT/2)**2) + 0.05
-        # alpha = 0.4
-        return color(random(), random(), random(), alpha)
-
+        alpha = r / sqrt((WIDTH/2)**2 + (HEIGHT/2)**2) + 0.08
+        red = random() + r / (WIDTH/2)
+        green = random() - r / (WIDTH/2)
+        blue = random() - r / (WIDTH/2)
+        return color(red, green, blue, alpha)
 
     def ray_target_point(self, theta):
         """ Given the ray angle, determine the direction to extend the line in. """
@@ -73,34 +77,15 @@ class ArchimedeanSpiral(object):
 
         quad = self.find_quadrant(theta)
         if quad == 'QUAD_1' or quad == 'QUAD_4':
-            tx = WIDTH/2
+            tx = WIDTH/2 + 50
             ty = slope * tx
             return (tx, ty)
         elif quad == 'QUAD_2' or quad == 'QUAD_3':
-            tx = -WIDTH/2
+            tx = -WIDTH/2 - 50
             ty = slope * tx
             return (tx, ty)
         else:
             raise ValueError, "Unknown quadrant"
-
-        # if quad == 'QUAD_1':
-            # tx = WIDTH/2
-            # ty = slope * tx
-            # return (tx, ty)
-        # elif quad == 'QUAD_2':
-            # tx = -WIDTH/2
-            # ty = slope * tx
-            # return (tx, ty)
-        # elif quad == 'QUAD_3':
-            # tx = -WIDTH/2
-            # ty = slope * tx
-            # return (tx, ty)
-        # elif quad == 'QUAD_4':
-            # tx = WIDTH/2
-            # ty = slope * tx
-            # return (tx, ty)
-        # else:
-            # raise ValueError, "Unknown quadrant"
 
     def find_quadrant(self, theta):
         """ Assumes that the origin has been set as the center of the figure. """
@@ -114,6 +99,10 @@ class ArchimedeanSpiral(object):
             return 'QUAD_4'
         else:
             raise ValueError, "Invalid angle."
+
+    def make_filename(self):
+        out = '%s %s_%s_%s_%s.png' % (datetime.now(), self.num_turns, self.alpha, self.num_rays, self.multiplier)
+        return out
 
 ######## Util functions
 
@@ -150,14 +139,8 @@ translate(WIDTH/2, HEIGHT/2)
 nofill()
 stroke(0)
 
-# spiral = ArchimedeanSpiral(40, 13)
-# path = spiral.find_spiral_path()
-# spiral.draw_spiral(path)
-# spiral.draw_rays(path, 100)
-
-spiral = ArchimedeanSpiral(5, 50)
+spiral = ArchimedeanSpiral(5, 50, 1200, 0.5)
 path = spiral.find_spiral_path()
-# spiral.draw_spiral(path)
-spiral.draw_rays(path, 800)
+spiral.draw_rays(path)
 
-canvas.save('artwork.png')
+canvas.save(spiral.make_filename())
