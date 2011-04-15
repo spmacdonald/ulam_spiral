@@ -23,5 +23,4 @@ for i in range(grid_size):
         y = i*max_d
         d = grid[i][j]
         oval(x+(max_d/2. - d/2.), y+(max_d/2. - d/2.), d, d, fill=color(0.0)) 
-
 canvas.save('divisor_spiral.png')

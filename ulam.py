@@ -50,6 +50,7 @@ def print_grid(grid):
 
 def factors(n):
     """ Compute the factors of n. """
+    if n == 0: return set()
     return set(reduce(list.__add__, ([i, n/i] for i in xrange(1, int(sqrt(n) + 1)) if n % i == 0)))
 
 def test():

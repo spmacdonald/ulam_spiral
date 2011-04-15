@@ -63,9 +63,12 @@ class ArchimedeanSpiral(object):
 
     def get_ray_color(self, r, theta):
         alpha = r / sqrt((WIDTH/2)**2 + (HEIGHT/2)**2) + 0.08
-        red = random() + r / (WIDTH/2)
-        green = random() - r / (WIDTH/2)
-        blue = random() - r / (WIDTH/2)
+        # red = random() + r / (WIDTH/2)
+        # green = random() - r / (WIDTH/2)
+        # blue = random() - r / (WIDTH/2)
+        red = random()
+        green = random()
+        blue = random()
         return color(red, green, blue, alpha)
 
     def ray_target_point(self, theta):
