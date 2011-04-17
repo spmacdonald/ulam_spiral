@@ -38,9 +38,12 @@ class ArchimedeanSpiral(object):
         return findpath(points)
 
     def draw_spiral(self, path):
+        """ Draws the path to the screen. """
         drawpath(path)
 
     def draw_rays(self, path, multiplier=1.25):
+        """ Draw lines of width equal to the number of divisors each number
+        has, radiating outwards. """
         divisors = []
         for i in range(self.num_rays):
             divisors.append(len(factors(i)))
@@ -62,17 +65,16 @@ class ArchimedeanSpiral(object):
             line(point.x, point.y, tx, ty)
 
     def get_ray_color(self, r, theta):
+        """ The rays are colored in a random way.  Alpha is set
+        deterministically, increasing the further away from the origin. """
         alpha = r / sqrt((WIDTH/2)**2 + (HEIGHT/2)**2) + 0.08
-        # red = random() + r / (WIDTH/2)
-        # green = random() - r / (WIDTH/2)
-        # blue = random() - r / (WIDTH/2)
         red = random()
         green = random()
         blue = random()
         return color(red, green, blue, alpha)
 
     def ray_target_point(self, theta):
-        """ Given the ray angle, determine the direction to extend the line in. """
+        """ Given the ray angle, determine the point to extend the line to. """
         try:
             slope = sin(theta) / cos(theta)
         except ZeroDivisionError:
@@ -91,7 +93,8 @@ class ArchimedeanSpiral(object):
             raise ValueError, "Unknown quadrant"
 
     def find_quadrant(self, theta):
-        """ Assumes that the origin has been set as the center of the figure. """
+        """ Assumes that the origin has been set as the center of the figure
+        and that angles are increasing in the clockwise direction. """
         if 0 <= theta and theta < pi/2:
             return 'QUAD_1'
         elif pi/2 < theta and theta < pi:
@@ -104,6 +107,7 @@ class ArchimedeanSpiral(object):
             raise ValueError, "Invalid angle."
 
     def make_filename(self):
+        """ Create a timestamped filename encoding drawing parameters. """
         out = '%s %s_%s_%s_%s.png' % (datetime.now(), self.num_turns, self.alpha, self.num_rays, self.multiplier)
         return out
 
@@ -115,6 +119,7 @@ def factors(n):
     return set(reduce(list.__add__, ([i, n/i] for i in xrange(1, int(sqrt(n) + 1)) if n % i == 0)))
 
 def frange(start, end=None, inc=None):
+    """ Floating point range. """
     if end == None:
         end = start + 0.0
         start = 0.0
